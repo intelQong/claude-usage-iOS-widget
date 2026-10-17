@@ -13,13 +13,13 @@
 
 <table>
   <tr>
-    <td align="center"><img src="docs/home.jpg" alt="Home Screen with the medium widget: Clawd, session 79 %, reset countdown, week 50 %" width="240"></td>
-    <td align="center"><img src="docs/today.jpg" alt="Today View with the same widget at another refresh, Clawd in a different pose" width="240"></td>
-    <td align="center"><img src="docs/lock.jpg" alt="Lock Screen with the rectangular widget: Clawd silhouette, 79 %, week 50 %, countdown" width="240"></td>
+    <td align="center"><img src="docs/home-dark.jpg" alt="Dark Home Screen with the small widget: Clawd, session 21 %, reset countdown, week 53 %" width="240"></td>
+    <td align="center"><img src="docs/glass-today.jpg" alt="Today View in the iOS 26 Clear style: the small widget rendered as Liquid Glass next to Calendar and Weather" width="240"></td>
+    <td align="center"><img src="docs/glass-lock.jpg" alt="Lock Screen with the rectangular widget: Clawd, 21 %, week 53 %, countdown" width="240"></td>
   </tr>
   <tr>
-    <td align="center"><sub>Home Screen</sub></td>
-    <td align="center"><sub>Today View</sub></td>
+    <td align="center"><sub>Home Screen, dark</sub></td>
+    <td align="center"><sub>Today View, Liquid Glass</sub></td>
     <td align="center"><sub>Lock Screen</sub></td>
   </tr>
 </table>
@@ -53,6 +53,7 @@ This is an iOS port of [clawd-usage-winwidget](https://github.com/Enhed/clawd-us
 - **Zero tokens.** The `/usage` command never calls the model, and no API key is needed.
 - **Home Screen and Lock Screen.** Small and medium widgets, plus inline, circular and rectangular
   Lock Screen widgets.
+- **Liquid Glass ready.** Turns into glass on its own with the iOS 26 Clear Home Screen style.
 - **Live countdown.** The time until your session resets ticks every second without using refresh budget.
 - **Animated Clawd.** He changes pose with your usage on the widget, and plays the Claude Code animations
   at 60 ms per frame when you tap it.
@@ -164,6 +165,8 @@ Pull the repository on the server (`git pull`). On the iPhone, replace the scrip
 | Lock Screen, rectangular | Clawd silhouette, session %, weekly %, bar, reset countdown |
 
 Bars turn yellow at 60 % and red at 85 %. Lock Screen widgets are tinted by iOS to match your wallpaper.
+With the iOS 26 **Clear** or **Tinted** Home Screen style, iOS renders the widget as Liquid Glass
+automatically; nothing to configure.
 
 **Clawd's mood** follows the session limit:
 
