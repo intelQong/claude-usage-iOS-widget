@@ -1,4 +1,4 @@
-# claude-limit-iOS-widget
+# claude-usage-iOS-widget
 
 Your Claude plan limits on the iPhone Home Screen and Lock Screen: the same numbers as `/usage` in
 Claude Code, with a pixel Clawd who reacts to them. Tap the widget for fresh numbers and an animated Clawd.
@@ -32,8 +32,8 @@ and the [GitHub CLI](https://cli.github.com) (`gh`).
 
 1. Clone the repo and check the probe works:
    ```sh
-   git clone https://github.com/intelQong/claude-limit-iOS-widget.git ~/claude-limit-iOS-widget
-   cd ~/claude-limit-iOS-widget
+   git clone https://github.com/intelQong/claude-usage-iOS-widget.git ~/claude-usage-iOS-widget
+   cd ~/claude-usage-iOS-widget
    python3 probe.py --test && python3 probe.py
    ```
 2. Make a GitHub token that can only edit Gists: github.com → Settings → Developer settings →
@@ -51,7 +51,7 @@ and the [GitHub CLI](https://cli.github.com) (`gh`).
    ```
 4. Run it every minute (`crontab -e`):
    ```
-   * * * * * $HOME/claude-limit-iOS-widget/publish.sh > $HOME/.cache/claude-usage/publish.log 2>&1
+   * * * * * $HOME/claude-usage-iOS-widget/publish.sh > $HOME/.cache/claude-usage/publish.log 2>&1
    ```
 
 Cron runs it in the background: no window, no terminal, nothing added to your Claude Code sessions.
