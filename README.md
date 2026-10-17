@@ -96,9 +96,10 @@ reset times, no email, account or prompts. Don't share your Gist link. The token
 ## Credits
 
 Clawd's sprites, animations and the `/usage` parsing rules come from
-[clawd-usage-winwidget](https://github.com/Enhed/clawd-usage-winwidget) by Venger Sergey (MIT).
-Clawd is the mascot from Claude Code's welcome screen.
+[clawd-usage-winwidget](https://github.com/Enhed/clawd-usage-winwidget) by Venger Sergey, used under
+the MIT License (notice in [NOTICE](NOTICE)). Clawd is the mascot from Claude Code's welcome screen.
 
 ## License
 
-[MIT](LICENSE)
+Copyright (C) 2026 intelQong. [GNU GPL v3](LICENSE) or later: you can use, change and share it, and
+anything you distribute that's built on it must stay open source under the same license.
