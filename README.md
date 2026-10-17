@@ -7,6 +7,10 @@ An iOS port of [clawd-usage-winwidget](https://github.com/Enhed/clawd-usage-winw
 
 > Unofficial. Not affiliated with or endorsed by Anthropic.
 
+<img src="docs/home.jpg" alt="Home Screen with the medium widget: Clawd, session 79 %, reset countdown, week 50 %" width="250">
+<img src="docs/today.jpg" alt="Today View with the same widget at another refresh, Clawd in a different pose" width="250">
+<img src="docs/lock.jpg" alt="Lock Screen with the rectangular widget: Clawd silhouette, 79 %, week 50 %, countdown" width="250">
+
 ## How it works
 
 ```
