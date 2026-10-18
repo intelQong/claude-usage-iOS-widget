@@ -354,9 +354,10 @@ function homeWidget(data) {
     const barW = big ? 290 : 130
 
     const head = w.addStack(); head.centerAlignContent()
-    const img = head.addImage(clawdImage(s)); img.imageSize = big ? new Size(76, 67) : new Size(62, 55)
+    const img = head.addImage(clawdImage(s)); img.imageSize = big ? new Size(76, 67) : new Size(54, 48)
     head.addSpacer()
     const pct = head.addText(s.pct + "%"); pct.font = Font.boldRoundedSystemFont(big ? 50 : 38); pct.textColor = color(s.pct)
+    pct.lineLimit = 1; pct.minimumScaleFactor = 0.6  // "100%" shrinks instead of turning into "1…"
     w.addSpacer()  // flexible spacers share any leftover height, so no single gap opens up
     w.addImage(bar(s.pct, barW, false, 10))
     w.addSpacer(3)
