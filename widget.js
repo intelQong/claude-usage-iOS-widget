@@ -110,14 +110,14 @@ function clawdImage(s, mono) {
   return ctx.getImage()
 }
 
-function bar(pct, w, mono) {
+function bar(pct, w, mono, h = 8) {
   const ctx = new DrawContext()
   ctx.opaque = false
   ctx.respectScreenScale = true
-  ctx.size = new Size(w, 8)
-  const track = new Path(); track.addRoundedRect(new Rect(0, 0, w, 8), 4, 4)
+  ctx.size = new Size(w, h)
+  const track = new Path(); track.addRoundedRect(new Rect(0, 0, w, h), h / 2, h / 2)
   ctx.addPath(track); ctx.setFillColor(new Color("#ffffff", mono ? 0.3 : 0.15)); ctx.fillPath()
-  const fill = new Path(); fill.addRoundedRect(new Rect(0, 0, Math.max(8, w * Math.min(pct, 100) / 100), 8), 4, 4)
+  const fill = new Path(); fill.addRoundedRect(new Rect(0, 0, Math.max(h, w * Math.min(pct, 100) / 100), h), h / 2, h / 2)
   ctx.addPath(fill); ctx.setFillColor(mono ? Color.white() : color(pct)); ctx.fillPath()
   return ctx.getImage()
 }
@@ -176,7 +176,7 @@ function row(parent, label, lim, w) {
   top.addSpacer()
   const p = top.addText(lim.pct + "%"); p.font = Font.boldSystemFont(13); p.textColor = color(lim.pct)
   parent.addSpacer(2)
-  parent.addImage(bar(lim.pct, w))
+  parent.addImage(bar(lim.pct, w, false, 10))
 }
 
 function resets(parent, lim) {
@@ -354,11 +354,11 @@ function homeWidget(data) {
     const barW = big ? 290 : 130
 
     const head = w.addStack(); head.centerAlignContent()
-    const img = head.addImage(clawdImage(s)); img.imageSize = big ? new Size(70, 62) : new Size(50, 44)
+    const img = head.addImage(clawdImage(s)); img.imageSize = big ? new Size(76, 67) : new Size(62, 55)
     head.addSpacer()
-    const pct = head.addText(s.pct + "%"); pct.font = Font.boldRoundedSystemFont(big ? 46 : 34); pct.textColor = color(s.pct)
-    w.addSpacer(4)
-    w.addImage(bar(s.pct, barW))
+    const pct = head.addText(s.pct + "%"); pct.font = Font.boldRoundedSystemFont(big ? 50 : 38); pct.textColor = color(s.pct)
+    w.addSpacer()  // flexible spacers share any leftover height, so no single gap opens up
+    w.addImage(bar(s.pct, barW, false, 10))
     w.addSpacer(3)
     resets(w, s)
     w.addSpacer()
