@@ -7,7 +7,10 @@
 const param = (args.widgetParameter || "").trim()
 if (param) Keychain.set("claude-usage-url", param)
 const URL = param || (Keychain.contains("claude-usage-url") ? Keychain.get("claude-usage-url") : "")
-const BG = "#1a1a1a"
+const EYE = "#1a1a1e"  // Clawd's eyes, dark in both themes
+// Follows the system Light/Dark setting (widgets can't ask which one is on, Color.dynamic can).
+const BG = Color.dynamic(new Color("#f2f2f7"), new Color("#1a1a1e"))
+const FG = Color.dynamic(Color.black(), Color.white())
 const fm = FileManager.local()
 const cache = fm.joinPath(fm.documentsDirectory(), "claude-usage.json")
 
@@ -96,7 +99,7 @@ function clawdImage(s, mono) {
   ctx.size = new Size(18 * px, 12 * py + top)
   for (const [x, y, c] of clawdCells(f)) {
     if (mono && c === 2) continue
-    ctx.setFillColor(mono ? Color.white() : new Color(c === 2 ? BG : "#D77757"))
+    ctx.setFillColor(mono ? Color.white() : new Color(c === 2 ? EYE : "#D77757"))
     ctx.fillRect(new Rect(x * px, top + y * py, px + 0.3, py + 0.3))
   }
   if (f.eyes === "closed") {
@@ -116,9 +119,34 @@ function bar(pct, w, mono, h = 8) {
   ctx.respectScreenScale = true
   ctx.size = new Size(w, h)
   const track = new Path(); track.addRoundedRect(new Rect(0, 0, w, h), h / 2, h / 2)
-  ctx.addPath(track); ctx.setFillColor(new Color("#ffffff", mono ? 0.3 : 0.15)); ctx.fillPath()
+  ctx.addPath(track); ctx.setFillColor(mono ? new Color("#ffffff", 0.3) : new Color("#8e8e93", 0.25)); ctx.fillPath()
   const fill = new Path(); fill.addRoundedRect(new Rect(0, 0, Math.max(h, w * Math.min(pct, 100) / 100), h), h / 2, h / 2)
   ctx.addPath(fill); ctx.setFillColor(mono ? Color.white() : color(pct)); ctx.fillPath()
+  return ctx.getImage()
+}
+
+// Faint sky behind Clawd and the %, as in the Windows widget, minus the weather: sun by day, stars by night.
+// Mid-tone colors so it reads on both light and dark backgrounds.
+function sky(w, h) {
+  const ctx = new DrawContext()
+  ctx.opaque = false
+  ctx.respectScreenScale = true
+  ctx.size = new Size(w, h)
+  const now = new Date(), hr = now.getHours() + now.getMinutes() / 60
+  if (hr >= 6 && hr < 19) {  // sun along an arc, rising left, setting right
+    const t = (hr - 6) / 13, x = w * (0.1 + 0.8 * t), y = h * (0.75 - 0.6 * Math.sin(Math.PI * t))
+    ctx.setFillColor(new Color("#FFB340", 0.15)); ctx.fillEllipse(new Rect(x - 12, y - 12, 24, 24))
+    ctx.setFillColor(new Color("#FFB340", 0.45)); ctx.fillEllipse(new Rect(x - 6, y - 6, 12, 12))
+  } else {
+    // ponytail: fixed pseudo-random stars, varied per night so the sky isn't always the same
+    let seed = now.getDate() * 97 + 13
+    const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647
+    for (let i = 0; i < Math.round(w / 12); i++) {
+      const r = rnd() < 0.2 ? 1.6 : 1
+      ctx.setFillColor(new Color("#8e8e93", 0.3 + 0.4 * rnd()))
+      ctx.fillEllipse(new Rect(rnd() * w, rnd() * h * 0.8, r, r))
+    }
+  }
   return ctx.getImage()
 }
 
@@ -185,7 +213,7 @@ function resets(parent, lim) {
   if (!lim.reset) { const z = s.addText("—"); z.font = Font.systemFont(13); return }
   // Ticks live on the Home Screen without spending refresh budget.
   const d = s.addDate(new Date(lim.reset)); d.applyTimerStyle()
-  d.font = Font.regularMonospacedSystemFont(13); d.textColor = Color.white()
+  d.font = Font.regularMonospacedSystemFont(13); d.textColor = FG
 }
 
 // Tap page: the 60 ms frame sequences from mascot.ps1, idle acts at random, tap Clawd for one more.
@@ -193,13 +221,14 @@ function page(data) {
   return `<!doctype html><html><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 <style>
-  body { margin: 0; background: ${BG}; color: #fff; font: 15px -apple-system, system-ui; padding: 8px 22px 32px; -webkit-user-select: none }
+  body { margin: 0; background: #1a1a1e; color: #fff; font: 15px -apple-system, system-ui; padding: 8px 22px 32px; -webkit-user-select: none }
   canvas { display: block; margin: 0 auto; width: 288px; height: 230px }
   .big { font: 700 72px ui-rounded, -apple-system, system-ui, sans-serif; text-align: center; line-height: 1 }
   .sub { color: #8e8e93; text-align: center; margin-top: 8px; font-variant-numeric: tabular-nums }
   .row { display: flex; justify-content: space-between; color: #8e8e93; font-weight: 600; font-size: 14px; margin-top: 24px }
-  .bar { height: 10px; border-radius: 5px; background: rgba(255,255,255,.15); margin-top: 6px; overflow: hidden }
+  .bar { height: 10px; border-radius: 5px; background: rgba(142,142,147,.25); margin-top: 6px; overflow: hidden }
   .bar > i { display: block; height: 100%; border-radius: 5px }
+  @media (prefers-color-scheme: light) { body { background: #f2f2f7; color: #000 } }
   .hint { color: #636366; text-align: center; font-size: 12px; margin-top: 30px }
 </style></head><body>
 <canvas id="c" width="576" height="460"></canvas>
@@ -297,7 +326,7 @@ function frame() {
   g.clearRect(0, 0, 288, 230)
   const body = mood === "dead" ? "#b0705a" : "#D77757"
   for (const [x, y, k] of clawdCells(f)) {
-    g.fillStyle = k === 2 ? "${BG}" : body
+    g.fillStyle = k === 2 ? "${EYE}" : body
     g.fillRect(OX + x * P, OY + y * PY, P + 0.5, PY + 0.5)
   }
   if (f.poof && f.off > 0) {  // dust at the sides while crouched
@@ -342,18 +371,19 @@ Script.complete()
 
 function homeWidget(data) {
   const w = new ListWidget()
-  w.backgroundColor = new Color(BG)
+  w.backgroundColor = BG
   w.setPadding(12, 12, 12, 12)
 
   if (!data || !data.session) {
     const t = w.addText("No data: " + (loadError || "no session in JSON") + "\n" + URL)
-    t.font = Font.systemFont(13); t.textColor = Color.white()
+    t.font = Font.systemFont(13); t.textColor = FG
   } else {
     const s = data.session
     const big = config.widgetFamily === "medium"
     const barW = big ? 290 : 130
 
     const head = w.addStack(); head.centerAlignContent()
+    head.backgroundImage = sky(barW, big ? 67 : 48)
     const img = head.addImage(clawdImage(s)); img.imageSize = big ? new Size(76, 67) : new Size(54, 48)
     head.addSpacer()
     const pct = head.addText(s.pct + "%"); pct.font = Font.boldRoundedSystemFont(big ? 50 : 38); pct.textColor = color(s.pct)
